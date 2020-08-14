@@ -1,6 +1,6 @@
 # HelloDB
 
-A Hello World (Kitty?) project to build a NoSQL (and no frills) database server based on the [WiredTiger 3.2.1](http://source.wiredtiger.com/) storage engine. Currently supports up to 7 fields per table :joy:
+A hello world (kitty?) project to build a NoSQL (and no frills) database server based on the [WiredTiger 3.2.1](http://source.wiredtiger.com/) storage engine. Currently supports up to 7 fields per table :joy:
 
 ## Installation
 
