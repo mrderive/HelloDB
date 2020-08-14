@@ -103,7 +103,7 @@ $ hello insert]customers]Susan]35
 inserted>
 recno: 4
 ```
-Note: Single quotes are not necessary if you are using `echo` directly instead of a `bash` function
+Note: Single quotes are not necessary if you are using `echo` or `nc` directly instead of a `bash` function
 
 ### at
 
