@@ -628,7 +628,7 @@ void parseMeta(char* cur, std::vector<std::string> &fields, std::map<std::string
             ++cur;
         }
         fields.push_back(field);
-        field_to_num[field] = fields.size()-1;
+        field_to_num[std::move(field)] = fields.size()-1;
         while(*cur == 0) {
             ++cur;
         }
@@ -673,13 +673,13 @@ int main(int argc, char* argv[]) {
         if(*(tokens.at(i)) == '#') {
             wiredtiger_table += "table:";
             wiredtiger_table += tokens.at(i)+1;
-            table_to_meta[wiredtiger_table] = std::move(fields);
-            table_to_field_to_num[wiredtiger_table] = std::move(field_to_num);
+            table_to_meta[std::move(wiredtiger_table)] = std::move(fields);
+            table_to_field_to_num[std::move(wiredtiger_table)] = std::move(field_to_num);
         }
         else {
             wiredtiger_table += "index:";
             wiredtiger_table += tokens.at(i)+1;
-            index_to_meta[wiredtiger_table] = std::move(fields);
+            index_to_meta[std::move(wiredtiger_table)] = std::move(fields);
         }
     }
     
