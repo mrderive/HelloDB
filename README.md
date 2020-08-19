@@ -242,7 +242,7 @@ $ ps -ef | grep hellodb
 
 ### exit
 
-If you are using an interactive session via `nc` directly:
+If you are using an interactive session via `nc` or `telnet` directly:
 ```
 $ nc localhost 27000
 find]customers]location_age]New York]35
