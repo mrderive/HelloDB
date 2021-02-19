@@ -11,9 +11,9 @@ cd wiredtiger[-3.2.1]
 make
 make install
 ```
-You should now have `/usr/local/lib/libwiredtiger.so`, `/usr/local/include/wiredtiger.h`, and `/usr/local/bin/wt`
+You should now have `/usr/local/lib/libwiredtiger.so`, `/usr/local/include/wiredtiger.h`, and `/usr/local/bin/wt`.
 
-Clone or download `hellodb.cpp`
+Clone or download `hellodb.cpp`.
 
 Compile the `hellodb` binary:
 ```
@@ -73,7 +73,7 @@ Start the database server (in the background with log output):
 
 ## Usage
 
-Sorry, no client yet. Have to use TCP tools such as `nc` or `telnet`. For convenience, you can set up a `bash` function like so:
+Sorry, no client yet. You can use TCP tools such as `nc` or `telnet`. For convenience, you can set up a `bash` function like so:
 ```
 hello() {
     echo $1 | nc -w1 localhost 27000
@@ -103,7 +103,7 @@ $ hello insert]customers]Susan]35
 inserted>
 recno: 4
 ```
-Note: Single quotes are not necessary if you are using `echo` or `nc` directly instead of a `bash` function
+Note: Single quotes are not necessary if you are using `echo` or `nc` interactively instead of via `bash` function.
 
 ### at
 
