@@ -20,9 +20,9 @@ Compile the `hellodb` binary:
 g++ -o /path/to/hellodb /path/to/hellodb.cpp -lwiredtiger -lpthread
 ```
 
-## Running the server
+## Configuration
 
-Create a text file to define your table and index meta data:
+Create a text file to define your table and index metadata:
 ```
 #<table>
 <field>
@@ -65,6 +65,7 @@ item
 customer
 ```
 
+## Running
 
 Start the database server (in the background with log output):
 ```
