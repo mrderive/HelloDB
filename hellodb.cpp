@@ -105,15 +105,17 @@ void createCursors(WT_SESSION* session, std::map<std::string,WT_CURSOR*> &cursor
     }
 }
 
-void parseBuffer(char* buffer_read, int bytes_read, std::vector<char*> &tokens) {
-    for(int i=0; i < bytes_read; ++i) {
-        if(buffer_read[i] == ']' || buffer_read[i] == 10 || buffer_read[i] == 13) {
-            if(buffer_read[i] == ']') {
-                tokens.push_back(buffer_read+i+1);
-            }
+int parseBuffer(char* buffer_read, int bytes_read, int offset, std::vector<char*> &tokens) {    
+    for(int i=offset; i < bytes_read; ++i) {
+        if(buffer_read[i] == ']') {
             buffer_read[i] = 0;
+            tokens.push_back(buffer_read+i+1);
+        } else if(buffer_read[i] == 10 || buffer_read[i] == 13) {
+            buffer_read[i] = 0;
+            return i+1;
         }
     }
+    return bytes_read;
 }
 
 void insert(std::map<std::string,WT_CURSOR*> &cursor_pool, std::vector<char*> &tokens, int socket_client) {
@@ -501,35 +503,36 @@ void* manageSession(void* arg) {
     int bytes_read = read(socket_client, buffer_read, 999999);
 
     std::vector<char*> tokens;
-    parseBuffer(buffer_read, bytes_read, tokens);
-
-    while(bytes_read > 0 && strcmp(buffer_read,"exit") != 0 && strcmp(buffer_read,"shutdown") != 0) {
-        if(strcmp(buffer_read,"insert") == 0) {
+    int prev_offset = 0;
+    int next_offset = parseBuffer(buffer_read, bytes_read, prev_offset, tokens);
+    char* begin = buffer_read + prev_offset;
+    while(bytes_read > 0 && strcmp(begin,"exit") != 0 && strcmp(begin,"shutdown") != 0) {
+        if(strcmp(begin,"insert") == 0) {
             if(tokens.size() > 0) {
                 insert(cursor_pool, tokens, socket_client);
             }
         }
-        else if(strcmp(buffer_read,"at") == 0) {
+        else if(strcmp(begin,"at") == 0) {
             if(tokens.size() > 1) {
                 at(cursor_pool, tokens, socket_client);
             }
         }
-        else if(strcmp(buffer_read,"dump") == 0) {
+        else if(strcmp(begin,"dump") == 0) {
             if(tokens.size() > 0) {
                 dump(cursor_pool, tokens, socket_client);
             }            
         }
-        else if(strcmp(buffer_read,"find") == 0) {
+        else if(strcmp(begin,"find") == 0) {
             if(tokens.size() > 1) {
                 find(cursor_pool, tokens, socket_client);
             }
         }
-        else if(strcmp(buffer_read,"delete") == 0) {
+        else if(strcmp(begin,"delete") == 0) {
             if(tokens.size() > 1) {
                 remove(cursor_pool, tokens, socket_client);
             }
         }
-        else if(strcmp(buffer_read,"update") == 0) {
+        else if(strcmp(begin,"update") == 0) {
             if(tokens.size() > 1) {
                 update(cursor_pool, tokens, socket_client);
             }
@@ -538,13 +541,22 @@ void* manageSession(void* arg) {
             std::string tmp("\nInvalid command\n\n");
             customWrite(socket_client, tmp.c_str(), tmp.length());
         }
-
-        buffer_read[0] = 0;
-        bytes_read = 0;
-        bytes_read = read(socket_client, buffer_read, 9999999);
-
-        tokens.clear();
-        parseBuffer(buffer_read, bytes_read, tokens);
+        
+        if(next_offset >= bytes_read) {
+            buffer_read[0] = 0;
+            bytes_read = 0;
+            bytes_read = read(socket_client, buffer_read, 9999999);
+            
+            tokens.clear();
+            prev_offset = 0;
+            next_offset = parseBuffer(buffer_read, bytes_read, prev_offset, tokens);
+        }
+        else {
+            tokens.clear();
+            prev_offset = next_offset;
+            next_offset = parseBuffer(buffer_read, bytes_read, prev_offset, tokens);
+        }
+        begin = buffer_read + prev_offset;
     }
     
     std::cout << "disconnecting" << std::endl;
