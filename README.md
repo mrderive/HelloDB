@@ -39,7 +39,7 @@ Create a text file to define your table and index meta data:
 !<table>:<index>
 <field> <field>
 ```
-Eg. `meta.cfg`:
+For example, `meta.cfg`:
 ```
 #customers
 name age location
@@ -73,7 +73,7 @@ Start the database server (in the background with log output):
 
 ## Usage
 
-Sorry, no client yet. You can use TCP tools such as `nc` or `telnet`. For convenience, you can set up a `bash` function like so:
+Sorry, no client yet (but there is a [bulk loader](https://github.com/mrderive/GoToDB)). You can use TCP tools such as `nc` or `telnet`. For convenience, you can set up a `bash` function like so:
 ```
 hello() {
     echo $1 | nc -w1 localhost 27000
